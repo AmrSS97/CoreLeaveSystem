@@ -19,5 +19,6 @@ namespace CoreLeaveSystem.Data
         [ForeignKey("VacationTypeId")]
         public VacationType VacationType { get; set; }
         public int VacationTypeId { get; set; }
+        public int Period { get; set; }
     }
 }

@@ -4,14 +4,16 @@ using CoreLeaveSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CoreLeaveSystem.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201105191255_AddedBalanceData")]
+    partial class AddedBalanceData
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -33,9 +35,6 @@ namespace CoreLeaveSystem.Data.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<int>("NumberOfDays")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Period")
                         .HasColumnType("int");
 
                     b.Property<int>("VacationTypeId")
