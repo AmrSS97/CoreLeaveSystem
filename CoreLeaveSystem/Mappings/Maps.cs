@@ -12,8 +12,7 @@ namespace CoreLeaveSystem.Mappings
     {
         public Maps()
         {
-            CreateMap<VacationType, DetailsVacationTypeVM>().ReverseMap();
-            CreateMap<VacationType, CreateVacationTypeVM>().ReverseMap();
+            CreateMap<VacationType, VacationTypeVM>().ReverseMap();
             CreateMap<VacationAllocation, VacationAllocationVM>().ReverseMap();
             CreateMap<VacationHistory, VacationHistoryVM>().ReverseMap();
             CreateMap<Employee, EmployeeVM>().ReverseMap();

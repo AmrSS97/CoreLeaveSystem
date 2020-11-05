@@ -38,6 +38,12 @@ namespace CoreLeaveSystem.Repository
             return _db.VacationAllocations.Find(id);
         }
 
+        public bool isExists(int id)
+        {
+            var exists = _db.VacationAllocations.Any(q => q.Id == id);
+            return exists;
+        }
+
         public bool Save()
         {
             //Saving Changes and returning their number

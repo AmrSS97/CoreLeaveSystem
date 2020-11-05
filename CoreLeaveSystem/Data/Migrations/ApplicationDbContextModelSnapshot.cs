@@ -96,6 +96,9 @@ namespace CoreLeaveSystem.Data.Migrations
                         .HasColumnType("int")
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int>("Balance")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("DateCreated")
                         .HasColumnType("datetime2");
 

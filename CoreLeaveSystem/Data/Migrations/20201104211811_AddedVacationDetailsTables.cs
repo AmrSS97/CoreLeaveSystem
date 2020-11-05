@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace CoreLeaveSystem.Data.Migrations
 {
-    public partial class AddedVacationDetaislTables : Migration
+    public partial class AddedVacationDetailsTables : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -14,6 +14,7 @@ namespace CoreLeaveSystem.Data.Migrations
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(nullable: false),
+                    Balance = table.Column<int>(nullable: false),
                     DateCreated = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>

@@ -16,7 +16,7 @@ namespace CoreLeaveSystem.Models
         public DateTime StartDate { get; set; }
         [Required]
         public DateTime EndDate { get; set; }
-        public DetailsVacationTypeVM VacationType { get; set; }
+        public VacationTypeVM VacationType { get; set; }
         public int VacationTypeId { get; set; }
         public IEnumerable<SelectListItem> VacationTypes { get; set; }
         public DateTime DateRequested { get; set; }

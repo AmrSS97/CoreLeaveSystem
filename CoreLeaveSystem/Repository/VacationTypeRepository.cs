@@ -45,6 +45,12 @@ namespace CoreLeaveSystem.Repository
             throw new NotImplementedException();
         }
 
+        public bool isExists(int id)
+        {
+            var exists = _db.VacationTypes.Any(q => q.Id == id);
+            return exists;
+        }
+
         public bool Save()
         {
             //Saving changes and returning their number if present
