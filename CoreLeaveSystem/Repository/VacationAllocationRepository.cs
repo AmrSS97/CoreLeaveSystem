@@ -1,5 +1,6 @@
 ﻿using CoreLeaveSystem.Contracts;
 using CoreLeaveSystem.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,6 +17,12 @@ namespace CoreLeaveSystem.Repository
             _db = db;
         }
 
+        public bool CheckAllocation(int vacationtypeid, string employeeid)
+        {
+            var period = DateTime.Now.Year;
+            return FindAll().Where(q => q.EmployeeId == employeeid && q.VacationTypeId == vacationtypeid && q.Period == period).Any();
+        }
+
         public bool Create(VacationAllocation entity)
         {
             _db.VacationAllocations.Add(entity);
@@ -30,12 +37,20 @@ namespace CoreLeaveSystem.Repository
 
         public ICollection<VacationAllocation> FindAll()
         {
-            return _db.VacationAllocations.ToList();
+            var vacationallocations =  _db.VacationAllocations.Include(q => q.VacationType).ToList();
+            return vacationallocations;
         }
 
         public VacationAllocation FindById(int id)
         {
-            return _db.VacationAllocations.Find(id);
+            var vacationallocation = _db.VacationAllocations.Include(q => q.VacationType).Include(q => q.Employee).FirstOrDefault(q => q.Id == id);
+            return vacationallocation;
+        }
+
+        public ICollection<VacationAllocation> GetVacationAllocationsByEmployee(string id)
+        {
+            var period = DateTime.Now.Year;
+            return FindAll().Where(q => q.EmployeeId == id && q.Period == period).ToList();
         }
 
         public bool isExists(int id)

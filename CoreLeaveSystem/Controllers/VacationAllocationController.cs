@@ -7,6 +7,7 @@ using CoreLeaveSystem.Contracts;
 using CoreLeaveSystem.Data;
 using CoreLeaveSystem.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoreLeaveSystem.Controllers
@@ -16,13 +17,15 @@ namespace CoreLeaveSystem.Controllers
         private readonly IVacationTypeRepository _typerepo;
         private readonly IVacationAllocationRepository _allocationrepo;
         private readonly IMapper _mapper;
+        private readonly UserManager<Employee> _userManager;
 
 
-        public VacationAllocationController(IVacationTypeRepository typerepo,IVacationAllocationRepository allocationrepo, IMapper mapper)
+        public VacationAllocationController(IVacationTypeRepository typerepo,IVacationAllocationRepository allocationrepo, IMapper mapper, UserManager<Employee> userManager)
         {
             _typerepo = typerepo;
             _allocationrepo = allocationrepo;
             _mapper = mapper;
+            _userManager = userManager;
         }
 
         // GET: VacationAllocationController
@@ -39,14 +42,46 @@ namespace CoreLeaveSystem.Controllers
             
         }
 
-        /*public ActionResult SetLeave(int id)
+        public ActionResult SetLeave(int id)
         {
             var vacationtype = _typerepo.FindById(id);
-        }*/
-        // GET: VacationAllocationController/Details/5
-        public ActionResult Details(int id)
+            var employees = _userManager.GetUsersInRoleAsync("Employee").Result;
+            foreach (var emp in employees)
+            {
+                if (_allocationrepo.CheckAllocation(id, emp.Id))
+                    continue;
+                var allocation = new VacationAllocationVM
+                {
+                    DateCreated = DateTime.Now,
+                    EmployeeId = emp.Id,
+                    VacationTypeId = id,
+                    NumberOfDays = vacationtype.Balance,
+                    Period = DateTime.Now.Year
+                };
+                var vacationallocation = _mapper.Map<VacationAllocation>(allocation);
+                _allocationrepo.Create(vacationallocation);
+            }
+            return RedirectToAction(nameof(Index));
+        }
+
+        public ActionResult ListEmployees()
         {
-            return View();
+            var employees = _userManager.GetUsersInRoleAsync("Employee").Result;
+            var model = _mapper.Map<List<EmployeeVM>>(employees);
+            return View(model);
+        }
+        // GET: VacationAllocationController/Details/5
+        public ActionResult Details(string id)
+        {
+            var employee = _mapper.Map<EmployeeVM>(_userManager.FindByIdAsync(id).Result);
+            var allocations = _mapper.Map<List<VacationAllocationVM>>(_allocationrepo.GetVacationAllocationsByEmployee(id));
+            var model = new ViewAllocationVM
+            {
+                Employee = employee,
+                VacationAllocations = allocations
+            };
+          
+            return View(model);
         }
 
         // GET: VacationAllocationController/Create
@@ -73,17 +108,31 @@ namespace CoreLeaveSystem.Controllers
         // GET: VacationAllocationController/Edit/5
         public ActionResult Edit(int id)
         {
-            return View();
+            var vacationallocation =_allocationrepo.FindById(id);
+            var model = _mapper.Map<EditVacationAllocationVM>(vacationallocation);
+            return View(model);
         }
 
         // POST: VacationAllocationController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(int id, IFormCollection collection)
+        public ActionResult Edit(EditVacationAllocationVM model)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                if(!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+                var record = _allocationrepo.FindById(model.Id);
+                record.NumberOfDays = model.NumberOfDays;
+                var isSucces = _allocationrepo.Update(record);
+                if(!isSucces)
+                {
+                    ModelState.AddModelError("", "Error while saving...");
+                    return View(model);
+                }
+                return RedirectToAction(nameof(Details), new { id = model.EmployeeId});
             }
             catch
             {

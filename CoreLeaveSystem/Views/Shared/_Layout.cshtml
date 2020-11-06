@@ -1,6 +1,7 @@
 ﻿@using Microsoft.AspNetCore.Identity
-@inject SignInManager<IdentityUser> SignInManager
-@inject UserManager<IdentityUser> UserManager
+@using CoreLeaveSystem.Data
+@inject SignInManager<Employee> SignInManager
+@inject UserManager<Employee> UserManager
 
 <!DOCTYPE html>
 <html lang="en">
@@ -29,7 +30,7 @@
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-white" href="#">Apply for Leave</a>
                         </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
@@ -41,9 +42,9 @@
                                 </a>
                                 <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
                                     <a class="dropdown-item" asp-controller="VacationTypes" asp-action="Index">Vacation Types</a>
-                                    <a class="dropdown-item" href="#">Vacation Allocations</a>
+                                    <a class="dropdown-item" asp-controller="VacationAllocation" asp-action="Index">Vacation Allocations</a>
                                     <a class="dropdown-item" href="#">Vacation Applications</a>
-                                    <a class="dropdown-item" href="#">Employees</a>
+                                    <a class="dropdown-item" asp-controller="VacationAllocation" asp-action="ListEmployees">Employees</a>
                                 </div>
                             </li>
                             }

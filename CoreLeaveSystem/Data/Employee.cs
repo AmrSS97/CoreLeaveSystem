@@ -17,7 +17,6 @@ namespace CoreLeaveSystem.Data
         public string Fullname { get; set; }
         [Required]
         public DateTime BirthDate { get; set; }
-        [Required]
         public string Gender { get; set;}
 
     }
