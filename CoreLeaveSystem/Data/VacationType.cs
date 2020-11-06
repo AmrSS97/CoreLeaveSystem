@@ -14,6 +14,6 @@ namespace CoreLeaveSystem.Data
         public string Name { get; set; }
         [Required]
         public int Balance { get; set; }
-        public DateTime DateCreated { get; set; }
+        public DateTime? DateCreated { get; set; }
     }
 }

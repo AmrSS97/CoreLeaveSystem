@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace CoreLeaveSystem.Contracts
 {
-    interface IVacationAllocationRepository : IRepositoryBase<VacationAllocation>
+    public interface IVacationAllocationRepository : IRepositoryBase<VacationAllocation>
     {
 
     }

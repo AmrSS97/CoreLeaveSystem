@@ -1,0 +1,34 @@
+﻿@model CoreLeaveSystem.Models.CreateVacationAllocationVM
+
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Index</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               Vacation Types
+            </th>
+            <th>Action</th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model.VacationTypes) {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.ActionLink("Allocate To Employees", "SetLeave", new { id=item.Id}) |
+            </td>
+        </tr>
+}
+    </tbody>
+</table>

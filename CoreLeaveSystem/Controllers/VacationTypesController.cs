@@ -6,11 +6,13 @@ using AutoMapper;
 using CoreLeaveSystem.Contracts;
 using CoreLeaveSystem.Data;
 using CoreLeaveSystem.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CoreLeaveSystem.Controllers
 {
+    [Authorize(Roles ="Administrator")]
     public class VacationTypesController : Controller
     {
         private readonly IVacationTypeRepository _repo;

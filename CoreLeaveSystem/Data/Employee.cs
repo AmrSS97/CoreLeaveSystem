@@ -10,6 +10,10 @@ namespace CoreLeaveSystem.Data
     public class Employee : IdentityUser
     {
         [Required]
+        public string Firstname { get; set; }
+        [Required]
+        public string Lastname { get; set; }
+        [Required]
         public string Fullname { get; set; }
         [Required]
         public DateTime BirthDate { get; set; }

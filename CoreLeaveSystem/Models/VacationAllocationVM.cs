@@ -20,4 +20,10 @@ namespace CoreLeaveSystem.Models
         public IEnumerable<SelectListItem> Employees { get; set; }
         public IEnumerable<SelectListItem> VacationTypes { get; set; }
     }
+
+    public class CreateVacationAllocationVM
+    {
+        public int NumberUpdated { get; set; }
+        public List<VacationTypeVM> VacationTypes { get; set; }
+    }
 }

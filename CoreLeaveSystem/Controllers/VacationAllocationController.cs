@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using AutoMapper;
 using CoreLeaveSystem.Contracts;
+using CoreLeaveSystem.Data;
+using CoreLeaveSystem.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,12 +18,31 @@ namespace CoreLeaveSystem.Controllers
         private readonly IMapper _mapper;
 
 
+        public VacationAllocationController(IVacationTypeRepository typerepo,IVacationAllocationRepository allocationrepo, IMapper mapper)
+        {
+            _typerepo = typerepo;
+            _allocationrepo = allocationrepo;
+            _mapper = mapper;
+        }
+
         // GET: VacationAllocationController
         public ActionResult Index()
         {
-            return View();
+            var vacationtypes = _typerepo.FindAll().ToList();
+            var mappedvacationtypes = _mapper.Map<List<VacationType>, List<VacationTypeVM>>(vacationtypes);
+            var model = new CreateVacationAllocationVM
+            {
+                VacationTypes = mappedvacationtypes,
+                NumberUpdated = 0
+            };
+            return View(model);
+            
         }
 
+        /*public ActionResult SetLeave(int id)
+        {
+            var vacationtype = _typerepo.FindById(id);
+        }*/
         // GET: VacationAllocationController/Details/5
         public ActionResult Details(int id)
         {
