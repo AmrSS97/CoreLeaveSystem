@@ -16,16 +16,18 @@ namespace CoreLeaveSystem.Controllers
     {
         private readonly IVacationTypeRepository _typerepo;
         private readonly IVacationAllocationRepository _allocationrepo;
+        private readonly IEmployeeRepository _employee;
         private readonly IMapper _mapper;
         private readonly UserManager<Employee> _userManager;
 
 
-        public VacationAllocationController(IVacationTypeRepository typerepo,IVacationAllocationRepository allocationrepo, IMapper mapper, UserManager<Employee> userManager)
+        public VacationAllocationController(IVacationTypeRepository typerepo, IVacationAllocationRepository allocationrepo, IMapper mapper, UserManager<Employee> userManager, IEmployeeRepository employee)
         {
             _typerepo = typerepo;
             _allocationrepo = allocationrepo;
             _mapper = mapper;
             _userManager = userManager;
+            _employee = employee;
         }
 
         // GET: VacationAllocationController
@@ -39,7 +41,7 @@ namespace CoreLeaveSystem.Controllers
                 NumberUpdated = 0
             };
             return View(model);
-            
+
         }
 
         public ActionResult SetLeave(int id)
@@ -80,8 +82,42 @@ namespace CoreLeaveSystem.Controllers
                 Employee = employee,
                 VacationAllocations = allocations
             };
-          
+
             return View(model);
+        }
+        // GET: VacationAllocationController/EditEmployee
+        public ActionResult EditEmployee(string id)
+        {
+            var employee = _employee.FindByIdString(id);
+            var model = _mapper.Map<EmployeeVM>(employee);
+            return View(model);
+
+        }
+        // POST: VacationAllocationController/EditEmployee
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult EditEmployee(EmployeeVM model)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                {
+                    return View(model);
+                }
+                var Employee = _mapper.Map<Employee>(model);
+                var isSuccess = _employee.Update(Employee);
+                if (!isSuccess)
+                {
+                    ModelState.AddModelError("", "Something Went Wrong...");
+                    return View(model);
+                }
+                return RedirectToAction(nameof(ListEmployees));
+            }
+            catch
+            {
+                ModelState.AddModelError("", "Something Went Wrong...");
+                return View(model);
+            }
         }
 
         // GET: VacationAllocationController/Create
@@ -108,7 +144,7 @@ namespace CoreLeaveSystem.Controllers
         // GET: VacationAllocationController/Edit/5
         public ActionResult Edit(int id)
         {
-            var vacationallocation =_allocationrepo.FindById(id);
+            var vacationallocation = _allocationrepo.FindById(id);
             var model = _mapper.Map<EditVacationAllocationVM>(vacationallocation);
             return View(model);
         }
@@ -120,19 +156,19 @@ namespace CoreLeaveSystem.Controllers
         {
             try
             {
-                if(!ModelState.IsValid)
+                if (!ModelState.IsValid)
                 {
                     return View(model);
                 }
                 var record = _allocationrepo.FindById(model.Id);
                 record.NumberOfDays = model.NumberOfDays;
                 var isSucces = _allocationrepo.Update(record);
-                if(!isSucces)
+                if (!isSucces)
                 {
                     ModelState.AddModelError("", "Error while saving...");
                     return View(model);
                 }
-                return RedirectToAction(nameof(Details), new { id = model.EmployeeId});
+                return RedirectToAction(nameof(Details), new { id = model.EmployeeId });
             }
             catch
             {
@@ -141,24 +177,47 @@ namespace CoreLeaveSystem.Controllers
         }
 
         // GET: VacationAllocationController/Delete/5
-        public ActionResult Delete(int id)
+        public ActionResult DeleteEmployee(string id)
         {
-            return View();
+
+            var employee = _employee.FindByIdString(id);
+            if (employee == null)
+            {
+                return NotFound();
+            }
+            var isSuccess = _employee.Delete(employee);
+            if (!isSuccess)
+            {
+                ModelState.AddModelError("", "Something Went Wrong...");
+                return BadRequest();
+            }
+            return RedirectToAction(nameof(ListEmployees));
         }
 
         // POST: VacationAllocationController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, IFormCollection collection)
+        public ActionResult DeleteEmployee(string id, EmployeeVM model)
         {
             try
             {
-                return RedirectToAction(nameof(Index));
+                var employee = _employee.FindByIdString(id);
+                if (employee == null)
+                {
+                    return NotFound();
+                }
+                var isSuccess = _employee.Delete(employee);
+                if (!isSuccess)
+                {
+                    ModelState.AddModelError("", "Something Went Wrong...");
+                    return View(model);
+                }
+                return RedirectToAction(nameof(ListEmployees));
             }
             catch
             {
                 return View();
             }
-        }
+    }
     }
 }

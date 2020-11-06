@@ -39,6 +39,7 @@ namespace CoreLeaveSystem
             services.AddScoped<IVacationTypeRepository, VacationTypeRepository>();
             services.AddScoped<IVacationHistoryRepository, VacationHistoryRepository>();
             services.AddScoped<IVacationAllocationRepository, VacationAllocationRepository>();
+            services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 
             //Adding our AutoMapper in our configuration
             services.AddAutoMapper(typeof(Maps));
