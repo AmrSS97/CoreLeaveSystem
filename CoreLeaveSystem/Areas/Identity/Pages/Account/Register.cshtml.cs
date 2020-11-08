@@ -78,6 +78,12 @@ namespace CoreLeaveSystem.Areas.Identity.Pages.Account
             [Display(Name = "Full Name")]
             public string Fullname { get; set; }
 
+
+            [Required]
+            [DataType(DataType.Text)]
+            [Display(Name = "Full Name")]
+            public string Gender { get; set; }
+
             [Required]
             [DataType(DataType.Date)]
             [Display(Name = "Birth Date")]
@@ -97,7 +103,7 @@ namespace CoreLeaveSystem.Areas.Identity.Pages.Account
             ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
-                var user = new Employee { UserName = Input.Email, Email = Input.Email, Firstname = Input.Firstname, Lastname = Input.Lastname , Fullname = Input.Fullname, BirthDate = Input.BirthDate};
+                var user = new Employee { UserName = Input.Email, Email = Input.Email, Firstname = Input.Firstname, Lastname = Input.Lastname , Fullname = Input.Fullname, BirthDate = Input.BirthDate, Gender = Input.Gender};
                 var result = await _userManager.CreateAsync(user, Input.Password);
                 if (result.Succeeded)
                 {

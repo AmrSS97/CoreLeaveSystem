@@ -47,10 +47,16 @@ namespace CoreLeaveSystem.Repository
             return vacationallocation;
         }
 
-        public ICollection<VacationAllocation> GetVacationAllocationsByEmployee(string id)
+        public ICollection<VacationAllocation> GetVacationAllocationsByEmployee(string employeeid)
         {
             var period = DateTime.Now.Year;
-            return FindAll().Where(q => q.EmployeeId == id && q.Period == period).ToList();
+            return FindAll().Where(q => q.EmployeeId == employeeid && q.Period == period).ToList();
+        }
+
+        public VacationAllocation GetVacationAllocationsByEmployeeAndType(string employeeid, int vacationtypeid)
+        {
+            var period = DateTime.Now.Year;
+            return FindAll().FirstOrDefault(q => q.EmployeeId == employeeid && q.Period == period && q.VacationTypeId == vacationtypeid);
         }
 
         public bool isExists(int id)

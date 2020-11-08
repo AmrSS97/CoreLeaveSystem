@@ -6,8 +6,8 @@ using System.Threading.Tasks;
 
 namespace CoreLeaveSystem.Contracts
 {
-    public interface IVacationHistoryRepository : IRepositoryBase<VacationHistory>
+    public interface IVacationRequestRepository : IRepositoryBase<VacationRequest>
     {
-
+        ICollection<VacationRequest> GetVacationRequestByEmployee(string employeeid);
     }
 }

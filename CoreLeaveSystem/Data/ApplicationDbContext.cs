@@ -16,12 +16,10 @@ namespace CoreLeaveSystem.Data
         }
         public DbSet<Employee> Employees { get; set; }
         public DbSet<VacationType> VacationTypes { get; set; }
-        public DbSet<VacationHistory> VacationHistories { get; set; }
+        public DbSet<VacationRequest> VacationRequests { get; set; }
         public DbSet<VacationAllocation> VacationAllocations { get; set; }
-        public DbSet<CoreLeaveSystem.Models.VacationTypeVM> VacationTypeVM { get; set; }
-        public DbSet<CoreLeaveSystem.Models.EmployeeVM> EmployeeVM { get; set; }
-        public DbSet<CoreLeaveSystem.Models.VacationAllocationVM> VacationAllocationVM { get; set; }
-        public DbSet<CoreLeaveSystem.Models.EditVacationAllocationVM> EditVacationAllocationVM { get; set; }
+        public DbSet<CoreLeaveSystem.Models.VacationRequestVM> VacationRequestVM { get; set; }
+        
 
     }
 }

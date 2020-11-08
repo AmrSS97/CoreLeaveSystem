@@ -37,7 +37,7 @@ namespace CoreLeaveSystem
 
             //Add References for Repository and Contracts to Startup file
             services.AddScoped<IVacationTypeRepository, VacationTypeRepository>();
-            services.AddScoped<IVacationHistoryRepository, VacationHistoryRepository>();
+            services.AddScoped<IVacationRequestRepository, VacationRequestRepository>();
             services.AddScoped<IVacationAllocationRepository, VacationAllocationRepository>();
             services.AddScoped<IEmployeeRepository, EmployeeRepository>();
 

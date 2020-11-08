@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace CoreLeaveSystem.Data
 {
-    public class VacationHistory
+    public class VacationRequest
     {
         [Key]
         public int Id { get; set; }
@@ -21,9 +21,10 @@ namespace CoreLeaveSystem.Data
         public VacationType VacationType { get; set; }
         public int VacationTypeId { get; set; }
         public DateTime DateRequested { get; set; }
-        public DateTime DateActioned { get; set; }
+        public DateTime? DateActioned { get; set; }
         public bool? Approved { get; set; }
         [ForeignKey("ApprovedById")]
+        public bool Cancelled { get; set; }
         public Employee ApprovedBy { get; set; }
         public string ApprovedById { get; set; }
     }

@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.22/css/jquery.dataTables.min.css" />
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
 <body>
@@ -30,23 +31,27 @@
                             <a class="nav-link text-white" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link text-white" href="#">Apply for Leave</a>
+                            <a class="nav-link text-white" asp-controller="VacationRequest" asp-action="Create">Apply for Leave</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-white" asp-controller="VacationRequest" asp-action="MyLeave">My Leave</a>
                         </li>
                         @if (SignInManager.IsSignedIn(User))
                         {
                             if (User.IsInRole("Administrator"))
-                            { 
-                            <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                    Manage
-                                </a>
-                                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
-                                    <a class="dropdown-item" asp-controller="VacationTypes" asp-action="Index">Vacation Types</a>
-                                    <a class="dropdown-item" asp-controller="VacationAllocation" asp-action="Index">Vacation Allocations</a>
-                                    <a class="dropdown-item" href="#">Vacation Applications</a>
-                                    <a class="dropdown-item" asp-controller="VacationAllocation" asp-action="ListEmployees">Employees</a>
-                                </div>
-                            </li>
+                            {
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                        Manage
+                                    </a>
+                                    <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+                                        <a class="dropdown-item" asp-controller="VacationAllocation" asp-action="ListEmployees">Employees</a>
+                                        <a class="dropdown-item" asp-controller="VacationRequest" asp-action="Index">Vacation Requests</a>
+                                        <a class="dropdown-item" asp-controller="VacationTypes" asp-action="Index">Vacation Types</a>
+                                        <a class="dropdown-item" asp-controller="VacationAllocation" asp-action="Index">Vacation Allocations</a>
+
+                                    </div>
+                                </li>
                             }
                         }
                     </ul>
@@ -69,6 +74,7 @@
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="//cdn.datatables.net/1.10.22/js/jquery.dataTables.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     @RenderSection("Scripts", required: false)
 </body>
 </html>
