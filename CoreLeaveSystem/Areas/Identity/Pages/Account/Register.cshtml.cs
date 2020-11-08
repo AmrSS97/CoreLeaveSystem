@@ -81,8 +81,9 @@ namespace CoreLeaveSystem.Areas.Identity.Pages.Account
 
             [Required]
             [DataType(DataType.Text)]
-            [Display(Name = "Full Name")]
+            [Display(Name = "Gender")]
             public string Gender { get; set; }
+
 
             [Required]
             [DataType(DataType.Date)]

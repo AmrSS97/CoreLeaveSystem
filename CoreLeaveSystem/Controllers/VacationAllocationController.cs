@@ -102,6 +102,7 @@ namespace CoreLeaveSystem.Controllers
             {
                 if (!ModelState.IsValid)
                 {
+                    ModelState.AddModelError("", "Something Went Wrong...");
                     return View(model);
                 }
                 var Employee = _mapper.Map<Employee>(model);

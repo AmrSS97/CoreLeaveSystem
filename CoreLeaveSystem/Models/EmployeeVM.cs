@@ -14,6 +14,7 @@ namespace CoreLeaveSystem.Models
         [Display(Name = "Email Address")]
         public string Email { get; set; }
         [Display(Name = "Birth Date")]
+        [DataType(DataType.Date)]
         public DateTime BirthDate { get; set; }
         public string Lastname { get; set; }
         public string Firstname { get; set; }
