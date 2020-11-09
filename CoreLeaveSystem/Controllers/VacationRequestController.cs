@@ -34,9 +34,9 @@ namespace CoreLeaveSystem.Controllers
 
         [Authorize(Roles = "Administrator")]
         // GET: VacationRequestController
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var vacationRequests = _requestrepo.FindAll();
+            var vacationRequests = await _requestrepo.FindAll();
             var vacationRequestsModel = _mapper.Map<List<VacationRequestVM>>(vacationRequests);
             var model = new AdminVacationRequestViewVM
             {
@@ -50,24 +50,24 @@ namespace CoreLeaveSystem.Controllers
         }
 
         // GET: VacationRequestController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            var vacationrequest = _requestrepo.FindById(id);
+            var vacationrequest = await _requestrepo.FindById(id);
             var model = _mapper.Map<VacationRequestVM>(vacationrequest);
 
             return View(model);
         }
 
-        public ActionResult ApproveRequest(int id)
+        public async Task<ActionResult> ApproveRequest(int id)
         {
 
             try
             {
-                var user = _userManager.GetUserAsync(User).Result;
-                var vacationRequest = _requestrepo.FindById(id);
+                var user = await _userManager.GetUserAsync(User);
+                var vacationRequest = await _requestrepo.FindById(id);
                 var employeeid = vacationRequest.RequestingEmployeeId;
                 var vacationtypeId = vacationRequest.VacationTypeId;
-                var allocation = _allocationrepo.GetVacationAllocationsByEmployeeAndType(employeeid,vacationtypeId);
+                var allocation = await _allocationrepo.GetVacationAllocationsByEmployeeAndType(employeeid,vacationtypeId);
                 int daysRequested = (int)(vacationRequest.EndDate - vacationRequest.StartDate).TotalDays;
                 // allocation.NumberOfDays = allocation.NumberOfDays - daysRequested; Alternative Way
                 allocation.NumberOfDays -= daysRequested;
@@ -76,8 +76,8 @@ namespace CoreLeaveSystem.Controllers
                 vacationRequest.ApprovedById = user.Id;
                 vacationRequest.DateActioned = DateTime.Now;
 
-                 _requestrepo.Update(vacationRequest);
-                _allocationrepo.Update(allocation);
+                 await _requestrepo.Update(vacationRequest);
+                 await _allocationrepo.Update(allocation);
                 return RedirectToAction(nameof(Index), "Home");
 
             }
@@ -89,18 +89,18 @@ namespace CoreLeaveSystem.Controllers
           
         }
 
-        public ActionResult RejectRequest(int id)
+        public async Task<ActionResult> RejectRequest(int id)
         {
 
             try
             {
-                var user = _userManager.GetUserAsync(User).Result;
-                var vacationrequest = _requestrepo.FindById(id);
+                var user = await _userManager.GetUserAsync(User);
+                var vacationrequest = await _requestrepo.FindById(id);
                 vacationrequest.Approved = false;
                 vacationrequest.ApprovedById = user.Id;
                 vacationrequest.DateActioned = DateTime.Now;
 
-                _requestrepo.Update(vacationrequest);
+                await _requestrepo.Update(vacationrequest);
                 return RedirectToAction(nameof(Index));
 
             }
@@ -111,20 +111,20 @@ namespace CoreLeaveSystem.Controllers
             }
         }
 
-        public ActionResult CancelRequest(int id)
+        public async Task<ActionResult> CancelRequest(int id)
         {
-            var vacationRequest = _requestrepo.FindById(id);
+            var vacationRequest =await _requestrepo.FindById(id);
             vacationRequest.Cancelled = true;
-            _requestrepo.Update(vacationRequest);
+            await _requestrepo.Update(vacationRequest);
             return RedirectToAction(nameof(MyLeave));
         }
 
-        public ActionResult MyLeave()
+        public async Task<ActionResult> MyLeave()
         {
-            var employee = _userManager.GetUserAsync(User).Result;
+            var employee = await _userManager.GetUserAsync(User);
             var employeeid = employee.Id;
-            var employeeAllocations = _allocationrepo.GetVacationAllocationsByEmployee(employeeid);
-            var employeeRequests = _requestrepo.GetVacationRequestByEmployee(employeeid);
+            var employeeAllocations = await _allocationrepo.GetVacationAllocationsByEmployee(employeeid);
+            var employeeRequests = await _requestrepo.GetVacationRequestByEmployee(employeeid);
 
             var employeeAllocationsModel = _mapper.Map<List<VacationAllocationVM>>(employeeAllocations);
             var employeeRequestsModel = _mapper.Map<List<VacationRequestVM>>(employeeRequests);
@@ -139,9 +139,9 @@ namespace CoreLeaveSystem.Controllers
         }
 
         // GET: VacationRequestController/Create
-        public ActionResult Create()
+        public async Task<ActionResult> Create()
         {
-            var vacationtypes = _typerepo.FindAll();
+            var vacationtypes = await _typerepo.FindAll();
             var vacationtypeItems = vacationtypes.Select(q => new SelectListItem { 
             Text = q.Name,
             Value = q.Id.ToString()
@@ -156,11 +156,11 @@ namespace CoreLeaveSystem.Controllers
         // POST: VacationRequestController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(CreateVacationRequestVM model)
+        public async Task<ActionResult> Create(CreateVacationRequestVM model)
         {
             var startDate = Convert.ToDateTime(model.StartDate);
             var endDate = Convert.ToDateTime(model.EndDate);
-            var vacationtypes = _typerepo.FindAll();
+            var vacationtypes = await _typerepo.FindAll();
             var vacationtypeItems = vacationtypes.Select(q => new SelectListItem
             {
                 Text = q.Name,
@@ -180,8 +180,8 @@ namespace CoreLeaveSystem.Controllers
                     return View(model);
                 }
 
-                var employee = _userManager.GetUserAsync(User).Result;
-                var allocation = _allocationrepo.GetVacationAllocationsByEmployeeAndType(employee.Id, model.VacationTypeId);
+                var employee = await _userManager.GetUserAsync(User);
+                var allocation = await _allocationrepo.GetVacationAllocationsByEmployeeAndType(employee.Id, model.VacationTypeId);
                 int daysRequested = (int)(endDate - startDate).TotalDays;
 
                 if(daysRequested > allocation.NumberOfDays)
@@ -203,7 +203,7 @@ namespace CoreLeaveSystem.Controllers
                 };
 
                 var vacationrequest = _mapper.Map<VacationRequest>(VacationRequestModel);
-                var isSuccess = _requestrepo.Create(vacationrequest);
+                var isSuccess = await _requestrepo.Create(vacationrequest);
 
                 if(!isSuccess)
                 {

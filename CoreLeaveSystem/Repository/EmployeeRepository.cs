@@ -17,21 +17,21 @@ namespace CoreLeaveSystem.Repository
         {
             _db = db;
         }
-        public bool Create(Employee entity)
+        public async Task<bool> Create(Employee entity)
         {
-            _db.Employees.Add(entity);
-            return Save();
+            await _db.Employees.AddAsync(entity);
+            return await Save();
         }
 
-        public bool Delete(Employee entity)
+        public async Task<bool> Delete(Employee entity)
         {
             _db.Employees.Remove(entity);
-            return Save();
+            return await Save();
         }
 
-        public ICollection<Employee> FindAll()
+        public async Task<ICollection<Employee>> FindAll()
         {
-            return _db.Employees.ToList();
+            return await _db.Employees.ToListAsync();
         }
 
 
@@ -40,9 +40,9 @@ namespace CoreLeaveSystem.Repository
             throw new NotImplementedException();
         }
 
-        public Employee FindByIdString(string id)
+        public async Task<Employee> FindByIdStringAsync(string id)
         {
-            return _db.Employees.Find(id);
+            return await _db.Employees.FindAsync(id);
         }
 
         public bool isExists(int id)
@@ -50,16 +50,26 @@ namespace CoreLeaveSystem.Repository
             throw new NotImplementedException();
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
-            var changes = _db.SaveChanges();
+            var changes =await  _db.SaveChangesAsync();
             return changes > 0;
         }
 
-        public bool Update(Employee entity)
+        public async Task<bool> Update(Employee entity)
         {
             _db.Employees.Update(entity);
-            return Save();
+            return await Save();
+        }
+
+        Task<Employee> IRepositoryBase<Employee>.FindById(int id)
+        {
+            throw new NotImplementedException();
+        }
+
+        Task<bool> IRepositoryBase<Employee>.isExists(int id)
+        {
+            throw new NotImplementedException();
         }
     }
 }

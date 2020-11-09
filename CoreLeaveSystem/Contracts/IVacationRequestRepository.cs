@@ -8,6 +8,6 @@ namespace CoreLeaveSystem.Contracts
 {
     public interface IVacationRequestRepository : IRepositoryBase<VacationRequest>
     {
-        ICollection<VacationRequest> GetVacationRequestByEmployee(string employeeid);
+        Task<ICollection<VacationRequest>> GetVacationRequestByEmployee(string employeeid);
     }
 }

@@ -24,17 +24,18 @@ namespace CoreLeaveSystem.Controllers
             _mapper = mapper;
         }
         // GET: VacationTypesController
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var vacationtypes = _repo.FindAll().ToList();
-            var model = _mapper.Map<List<VacationType>, List<VacationTypeVM>>(vacationtypes);
+            var vacationtypes = await _repo.FindAll();
+            var model = _mapper.Map<List<VacationType>, List<VacationTypeVM>>(vacationtypes.ToList());
             return View(model);
         }
 
         // GET: VacationTypesController/Details/5
-        public ActionResult Details(int id)
+        public async Task<ActionResult> Details(int id)
         {
-            if(!_repo.isExists(id))
+            var isExists = await _repo.isExists(id);
+            if(!isExists)
             {
                 return NotFound();
             }
@@ -52,7 +53,7 @@ namespace CoreLeaveSystem.Controllers
         // POST: VacationTypesController/Create
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Create(VacationTypeVM model)
+        public async Task<ActionResult> Create(VacationTypeVM model)
         {
             try
             {
@@ -62,7 +63,7 @@ namespace CoreLeaveSystem.Controllers
                 }
                 var vacationType = _mapper.Map<VacationType>(model);
                 vacationType.DateCreated = DateTime.Now;
-                var isSuccess = _repo.Create(vacationType);
+                var isSuccess = await _repo.Create(vacationType);
                 if(!isSuccess)
                 {
                     ModelState.AddModelError("","Something Went Wrong...");
@@ -78,9 +79,10 @@ namespace CoreLeaveSystem.Controllers
         }
 
         // GET: VacationTypesController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            if(!_repo.isExists(id))
+            var isExists = await _repo.isExists(id);
+            if(!isExists)
             {
                 return NotFound();
             }
@@ -92,7 +94,7 @@ namespace CoreLeaveSystem.Controllers
         // POST: VacationTypesController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(VacationTypeVM model)
+        public async Task<ActionResult> Edit(VacationTypeVM model)
         {
             try
             {
@@ -101,7 +103,7 @@ namespace CoreLeaveSystem.Controllers
                     return View(model);
                 }
                 var vacationType = _mapper.Map<VacationType>(model);
-                var isSuccess = _repo.Update(vacationType);
+                var isSuccess = await _repo.Update(vacationType);
                 if(!isSuccess)
                 {
                     ModelState.AddModelError("", "Something Went Wrong...");
@@ -117,14 +119,14 @@ namespace CoreLeaveSystem.Controllers
         }
 
         // GET: VacationTypesController/Delete/5
-        public ActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var vacationtype = _repo.FindById(id);
+            var vacationtype = await _repo.FindById(id);
             if (vacationtype == null)
             {
                 return NotFound();
             }
-            var isSuccess = _repo.Delete(vacationtype);
+            var isSuccess = await _repo.Delete(vacationtype);
             if (!isSuccess)
             {
                 ModelState.AddModelError("", "Something Went Wrong...");
@@ -136,16 +138,16 @@ namespace CoreLeaveSystem.Controllers
         // POST: VacationTypesController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Delete(int id, VacationTypeVM model)
+        public async Task<ActionResult> Delete(int id, VacationTypeVM model)
         {
             try
             {
-                var vacationtype = _repo.FindById(id);
+                var vacationtype = await _repo.FindById(id);
                 if(vacationtype == null)
                 {
                     return NotFound();
                 }
-                var isSuccess = _repo.Delete(vacationtype);
+                var isSuccess = await _repo.Delete(vacationtype);
                 if (!isSuccess)
                 {
                     ModelState.AddModelError("", "Something Went Wrong...");

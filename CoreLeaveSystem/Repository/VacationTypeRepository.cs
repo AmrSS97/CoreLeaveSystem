@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace CoreLeaveSystem.Repository
 {
@@ -16,52 +17,52 @@ namespace CoreLeaveSystem.Repository
             _db = db;
         }
 
-        public bool Create(VacationType entity)
+        public async Task<bool> Create(VacationType entity)
         {
-            _db.VacationTypes.Add(entity);
-            return Save();
+            await _db.VacationTypes.AddAsync(entity);
+            return await Save();
         }
 
-        public bool Delete(VacationType entity)
+        public async Task<bool> Delete(VacationType entity)
         {
-            _db.VacationTypes.Remove(entity);
-            return Save();
+             _db.VacationTypes.Remove(entity);
+            return await Save();
         }
 
-        public ICollection<VacationType> FindAll()
+        public async Task<ICollection<VacationType>> FindAll()
         {
             //Returning All VacationTypes Table Records
-            return _db.VacationTypes.ToList();
+            return await _db.VacationTypes.ToListAsync();
         }
 
-        public VacationType FindById(int id)
+        public async Task<VacationType> FindById(int id)
         {
             //Return a specific record by ID
-            return _db.VacationTypes.Find(id);
+            return await _db.VacationTypes.FindAsync(id);
         }
 
-        public ICollection<VacationType> GetEmployeesByLeaveType(int id)
+     public  ICollection<VacationType> GetEmployeesByLeaveType(int id)
         {
             throw new NotImplementedException();
         }
 
-        public bool isExists(int id)
+      public async Task<bool> isExists(int id)
         {
-            var exists = _db.VacationTypes.Any(q => q.Id == id);
+            var exists = await _db.VacationTypes.AnyAsync(q => q.Id == id);
             return exists;
         }
 
-        public bool Save()
+       public async Task<bool> Save()
         {
             //Saving changes and returning their number if present
-            var changes = _db.SaveChanges();
+            var changes = await _db.SaveChangesAsync();
             return changes > 0;
         }
 
-        public bool Update(VacationType entity)
+       public async Task<bool> Update(VacationType entity)
         {
             _db.VacationTypes.Update(entity);
-            return Save();
+            return await Save();
         }
     }
 }

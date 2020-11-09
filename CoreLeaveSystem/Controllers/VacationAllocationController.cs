@@ -31,10 +31,10 @@ namespace CoreLeaveSystem.Controllers
         }
 
         // GET: VacationAllocationController
-        public ActionResult Index()
+        public async Task<ActionResult> Index()
         {
-            var vacationtypes = _typerepo.FindAll().ToList();
-            var mappedvacationtypes = _mapper.Map<List<VacationType>, List<VacationTypeVM>>(vacationtypes);
+            var vacationtypes =await  _typerepo.FindAll();
+            var mappedvacationtypes = _mapper.Map<List<VacationType>, List<VacationTypeVM>>(vacationtypes.ToList());
             var model = new CreateVacationAllocationVM
             {
                 VacationTypes = mappedvacationtypes,
@@ -44,13 +44,14 @@ namespace CoreLeaveSystem.Controllers
 
         }
 
-        public ActionResult SetLeave(int id)
+        public async Task<ActionResult> SetLeave(int id)
         {
-            var vacationtype = _typerepo.FindById(id);
+            var vacationtype = await _typerepo.FindById(id);
             var employees = _userManager.GetUsersInRoleAsync("Employee").Result;
             foreach (var emp in employees)
             {
-                if (_allocationrepo.CheckAllocation(id, emp.Id))
+                var checkAllocation = await _allocationrepo.CheckAllocation(id, emp.Id);
+                if (checkAllocation)
                     continue;
                 var allocation = new VacationAllocationVM
                 {
@@ -61,7 +62,7 @@ namespace CoreLeaveSystem.Controllers
                     Period = DateTime.Now.Year
                 };
                 var vacationallocation = _mapper.Map<VacationAllocation>(allocation);
-                _allocationrepo.Create(vacationallocation);
+                await _allocationrepo.Create(vacationallocation);
             }
             return RedirectToAction(nameof(Index));
         }
@@ -86,9 +87,9 @@ namespace CoreLeaveSystem.Controllers
             return View(model);
         }
         // GET: VacationAllocationController/EditEmployee
-        public ActionResult EditEmployee(string id)
+        public async Task<ActionResult> EditEmployee(string id)
         {
-            var employee = _employee.FindByIdString(id);
+            var employee = await _employee.FindByIdStringAsync(id);
             var model = _mapper.Map<EmployeeVM>(employee);
             return View(model);
 
@@ -96,7 +97,7 @@ namespace CoreLeaveSystem.Controllers
         // POST: VacationAllocationController/EditEmployee
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditEmployee(EmployeeVM model)
+        public async Task<ActionResult> EditEmployee(EmployeeVM model)
         {
             try
             {
@@ -106,7 +107,7 @@ namespace CoreLeaveSystem.Controllers
                     return View(model);
                 }
                 var Employee = _mapper.Map<Employee>(model);
-                var isSuccess = _employee.Update(Employee);
+                var isSuccess = await _employee.Update(Employee);
                 if (!isSuccess)
                 {
                     ModelState.AddModelError("", "Something Went Wrong...");
@@ -153,7 +154,7 @@ namespace CoreLeaveSystem.Controllers
         // POST: VacationAllocationController/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Edit(EditVacationAllocationVM model)
+        public async Task<ActionResult> Edit(EditVacationAllocationVM model)
         {
             try
             {
@@ -161,9 +162,9 @@ namespace CoreLeaveSystem.Controllers
                 {
                     return View(model);
                 }
-                var record = _allocationrepo.FindById(model.Id);
+                var record = await _allocationrepo.FindById(model.Id);
                 record.NumberOfDays = model.NumberOfDays;
-                var isSucces = _allocationrepo.Update(record);
+                var isSucces = await _allocationrepo.Update(record);
                 if (!isSucces)
                 {
                     ModelState.AddModelError("", "Error while saving...");
@@ -178,15 +179,15 @@ namespace CoreLeaveSystem.Controllers
         }
 
         // GET: VacationAllocationController/Delete/5
-        public ActionResult DeleteEmployee(string id)
+        public async Task<ActionResult> DeleteEmployee(string id)
         {
 
-            var employee = _employee.FindByIdString(id);
+            var employee = await _employee.FindByIdStringAsync(id);
             if (employee == null)
             {
                 return NotFound();
             }
-            var isSuccess = _employee.Delete(employee);
+            var isSuccess = await _employee.Delete(employee);
             if (!isSuccess)
             {
                 ModelState.AddModelError("", "Something Went Wrong...");
@@ -198,16 +199,16 @@ namespace CoreLeaveSystem.Controllers
         // POST: VacationAllocationController/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeleteEmployee(string id, EmployeeVM model)
+        public async Task<ActionResult> DeleteEmployee(string id, EmployeeVM model)
         {
             try
             {
-                var employee = _employee.FindByIdString(id);
+                var employee =await _employee.FindByIdStringAsync(id);
                 if (employee == null)
                 {
                     return NotFound();
                 }
-                var isSuccess = _employee.Delete(employee);
+                var isSuccess = await _employee.Delete(employee);
                 if (!isSuccess)
                 {
                     ModelState.AddModelError("", "Something Went Wrong...");

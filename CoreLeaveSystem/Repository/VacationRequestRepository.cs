@@ -17,50 +17,50 @@ namespace CoreLeaveSystem.Repository
             _db = db;
         }
 
-        public bool Create(VacationRequest entity)
+        public async Task<bool> Create(VacationRequest entity)
         {
-            _db.VacationRequests.Add(entity);
-            return Save();
+            await _db.VacationRequests.AddAsync(entity);
+            return await Save();
         }
 
-        public bool Delete(VacationRequest entity)
+        public async Task<bool> Delete(VacationRequest entity)
         {
             _db.VacationRequests.Remove(entity);
-            return Save();
+            return await Save();
         }
 
-        public ICollection<VacationRequest> FindAll()
+        public async Task<ICollection<VacationRequest>> FindAll()
         {
-            return _db.VacationRequests.Include(q => q.RequestingEmployee).Include(q => q.ApprovedBy).Include(q => q.VacationType).ToList();
+            return await _db.VacationRequests.Include(q => q.RequestingEmployee).Include(q => q.ApprovedBy).Include(q => q.VacationType).ToListAsync();
+        }
+    
+public async Task<VacationRequest> FindById(int id)
+        {
+            return await _db.VacationRequests.Include(q => q.RequestingEmployee).Include(q => q.ApprovedBy).Include(q => q.VacationType).FirstOrDefaultAsync(q => q.Id == id);
         }
 
-        public VacationRequest FindById(int id)
+public async Task<ICollection<VacationRequest>> GetVacationRequestByEmployee(string employeeid)
         {
-            return _db.VacationRequests.Include(q => q.RequestingEmployee).Include(q => q.ApprovedBy).Include(q => q.VacationType).FirstOrDefault(q => q.Id == id);
+            var vacationRequests = await FindAll();
+            return vacationRequests.Where(q => q.RequestingEmployeeId == employeeid).ToList(); ;
         }
 
-        public ICollection<VacationRequest> GetVacationRequestByEmployee(string employeeid)
+public async Task<bool> isExists(int id)
         {
-            var vacationRequests = FindAll().Where(q => q.RequestingEmployeeId == employeeid).ToList();
-            return vacationRequests;
+            var exists = await _db.VacationRequests.AnyAsync(q => q.Id == id);
+            return  exists;
         }
 
-        public bool isExists(int id)
+public async Task<bool> Save()
         {
-            var exists = _db.VacationRequests.Any(q => q.Id == id);
-            return exists;
-        }
-
-        public bool Save()
-        {
-            var changes = _db.SaveChanges();
+            var changes = await _db.SaveChangesAsync();
             return changes > 0;
         }
 
-        public bool Update(VacationRequest entity)
+public async Task<bool> Update(VacationRequest entity)
         {
             _db.VacationRequests.Update(entity);
-            return Save();
+            return await Save();
         }
     }
 }

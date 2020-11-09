@@ -17,65 +17,68 @@ namespace CoreLeaveSystem.Repository
             _db = db;
         }
 
-        public bool CheckAllocation(int vacationtypeid, string employeeid)
+        public async Task<bool> CheckAllocation(int vacationtypeid, string employeeid)
         {
             var period = DateTime.Now.Year;
-            return FindAll().Where(q => q.EmployeeId == employeeid && q.VacationTypeId == vacationtypeid && q.Period == period).Any();
+            var allocations = await FindAll();
+            return  allocations.Where(q => q.EmployeeId == employeeid && q.VacationTypeId == vacationtypeid && q.Period == period).Any();
         }
 
-        public bool Create(VacationAllocation entity)
+        public async Task<bool> Create(VacationAllocation entity)
         {
-            _db.VacationAllocations.Add(entity);
-            return Save();
+            await _db.VacationAllocations.AddAsync(entity);
+            return await Save();
         }
 
-        public bool Delete(VacationAllocation entity)
+        public async Task<bool> Delete(VacationAllocation entity)
         {
             _db.VacationAllocations.Remove(entity);
-            return Save();
+            return await Save();
         }
 
-        public ICollection<VacationAllocation> FindAll()
+        public async Task<ICollection<VacationAllocation>> FindAll()
         {
-            var vacationallocations =  _db.VacationAllocations.Include(q => q.VacationType).ToList();
+            var vacationallocations = await _db.VacationAllocations.Include(q => q.VacationType).ToListAsync();
             return vacationallocations;
         }
 
-        public VacationAllocation FindById(int id)
+        public async Task<VacationAllocation> FindById(int id)
         {
-            var vacationallocation = _db.VacationAllocations.Include(q => q.VacationType).Include(q => q.Employee).FirstOrDefault(q => q.Id == id);
+            var vacationallocation =await  _db.VacationAllocations.Include(q => q.VacationType).Include(q => q.Employee).FirstOrDefaultAsync(q => q.Id == id);
             return vacationallocation;
         }
 
-        public ICollection<VacationAllocation> GetVacationAllocationsByEmployee(string employeeid)
+        public async Task<ICollection<VacationAllocation>> GetVacationAllocationsByEmployee(string employeeid)
         {
             var period = DateTime.Now.Year;
-            return FindAll().Where(q => q.EmployeeId == employeeid && q.Period == period).ToList();
+            var vacationAllocations = await FindAll();
+            return vacationAllocations.Where(q => q.EmployeeId == employeeid && q.Period == period).ToList();
         }
 
-        public VacationAllocation GetVacationAllocationsByEmployeeAndType(string employeeid, int vacationtypeid)
+        public async Task<VacationAllocation> GetVacationAllocationsByEmployeeAndType(string employeeid, int vacationtypeid)
         {
             var period = DateTime.Now.Year;
-            return FindAll().FirstOrDefault(q => q.EmployeeId == employeeid && q.Period == period && q.VacationTypeId == vacationtypeid);
+            var vacationAllocations = await FindAll();
+            return  vacationAllocations.FirstOrDefault(q => q.EmployeeId == employeeid && q.Period == period && q.VacationTypeId == vacationtypeid);
         }
 
-        public bool isExists(int id)
+        public async Task<bool> isExists(int id)
         {
-            var exists = _db.VacationAllocations.Any(q => q.Id == id);
+            var exists = await _db.VacationAllocations.AnyAsync(q => q.Id == id);
             return exists;
         }
 
-        public bool Save()
+        public async Task<bool> Save()
         {
             //Saving Changes and returning their number
-            var changes = _db.SaveChanges();
+            var changes = await _db.SaveChangesAsync();
             return changes > 0;
         }
 
-        public bool Update(VacationAllocation entity)
+        public async Task<bool> Update(VacationAllocation entity)
         {
             _db.VacationAllocations.Update(entity);
-            return Save();
+            return await Save();
         }
     }
 }

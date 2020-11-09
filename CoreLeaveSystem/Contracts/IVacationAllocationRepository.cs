@@ -8,8 +8,8 @@ namespace CoreLeaveSystem.Contracts
 {
     public interface IVacationAllocationRepository : IRepositoryBase<VacationAllocation>
     {
-        bool CheckAllocation(int vacationtypeid, string employeeid);
-        ICollection<VacationAllocation> GetVacationAllocationsByEmployee(string employeeid);
-        VacationAllocation GetVacationAllocationsByEmployeeAndType(string employeeid, int vacationtypeid);
+        Task<bool> CheckAllocation(int vacationtypeid, string employeeid);
+        Task<ICollection<VacationAllocation>> GetVacationAllocationsByEmployee(string employeeid);
+        Task<VacationAllocation> GetVacationAllocationsByEmployeeAndType(string employeeid, int vacationtypeid);
     }
 }

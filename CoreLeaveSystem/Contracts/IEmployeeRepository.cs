@@ -8,6 +8,6 @@ namespace CoreLeaveSystem.Contracts
 {
     public interface IEmployeeRepository : IRepositoryBase<Employee>
     {
-        public Employee FindByIdString(string id);
+        public Task<Employee> FindByIdStringAsync(string id);
     }
 }
