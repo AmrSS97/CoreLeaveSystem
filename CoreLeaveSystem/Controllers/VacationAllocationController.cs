@@ -67,17 +67,17 @@ namespace CoreLeaveSystem.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        public ActionResult ListEmployees()
+        public async Task<ActionResult> ListEmployees()
         {
-            var employees = _userManager.GetUsersInRoleAsync("Employee").Result;
+            var employees = await _userManager.GetUsersInRoleAsync("Employee");
             var model = _mapper.Map<List<EmployeeVM>>(employees);
             return View(model);
         }
         // GET: VacationAllocationController/Details/5
-        public ActionResult Details(string id)
+        public async Task<ActionResult> Details(string id)
         {
-            var employee = _mapper.Map<EmployeeVM>(_userManager.FindByIdAsync(id).Result);
-            var allocations = _mapper.Map<List<VacationAllocationVM>>(_allocationrepo.GetVacationAllocationsByEmployee(id));
+            var employee = _mapper.Map<EmployeeVM>(await _userManager.FindByIdAsync(id));
+            var allocations = _mapper.Map<List<VacationAllocationVM>>(await _allocationrepo.GetVacationAllocationsByEmployee(id));
             var model = new ViewAllocationVM
             {
                 Employee = employee,
@@ -144,9 +144,9 @@ namespace CoreLeaveSystem.Controllers
         }
 
         // GET: VacationAllocationController/Edit/5
-        public ActionResult Edit(int id)
+        public async Task<ActionResult> Edit(int id)
         {
-            var vacationallocation = _allocationrepo.FindById(id);
+            var vacationallocation = await _allocationrepo.FindById(id);
             var model = _mapper.Map<EditVacationAllocationVM>(vacationallocation);
             return View(model);
         }
