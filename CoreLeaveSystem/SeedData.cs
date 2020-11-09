@@ -1,5 +1,7 @@
-﻿using CoreLeaveSystem.Data;
+﻿using CoreLeaveSystem.Contracts;
+using CoreLeaveSystem.Data;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,12 +19,12 @@ namespace CoreLeaveSystem
 
         private static void SeedUsers(UserManager<Employee> userManager)
         {
-            if(userManager.FindByNameAsync("admin@localhost.com").Result == null)
+            if(userManager.FindByNameAsync("admin@hrdoc.com").Result == null)
             {
                 var user = new Employee
                 {
-                    UserName = "admin@localhost.com",
-                    Email = "admin@localhost.com"
+                    UserName = "admin@hrdoc.com",
+                    Email = "admin@hrdoc.com"
                 };
 
                 var result = userManager.CreateAsync(user, "P@ssword1").Result;
@@ -54,5 +56,7 @@ namespace CoreLeaveSystem
                 var result = roleManager.CreateAsync(role);
             }
         }
+
+           
     }
 }
